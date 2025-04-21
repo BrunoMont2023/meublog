@@ -3,20 +3,21 @@
 
 {% block content %}
 <div class="row">
-    <!-- COLUNA PRINCIPAL -->
+    <!-- COLUNA ESQUERDA: conteúdo principal -->
     <div class="col-md-8">
         <div class="p-4 rounded" style="background-color: rgba(0, 0, 0, 0.6);">
             <h1 class="text-light">Bem-vindo ao Meu Blog</h1>
             <p class="lead text-light">
-                Um blog feito com Flask, Bootstrap e com galeria de imagens!
+                Aqui você encontra os nossos últimos posts, novidades e muito mais.
             </p>
         </div>
     </div>
 
-    <!-- GALERIA LATERAL -->
+    <!-- COLUNA DIREITA: galeria + feed -->
     <div class="col-md-4">
+        <!-- Galeria lateral -->
         <h5 class="text-light mb-3">Galeria de Posts</h5>
-        <div class="d-flex flex-column gap-3" style="max-height: 500px; overflow-y: auto;">
+        <div class="d-flex flex-column gap-3 mb-4" style="max-height: 500px; overflow-y: auto;">
             {% for post in posts %}
                 {% if capas[post[0]] %}
                 <a href="/blog/{{ post[0] }}" class="text-decoration-none text-light">
@@ -35,20 +36,15 @@
                 {% endif %}
             {% endfor %}
         </div>
-    </div>
-</div>
 
-<!-- FEED DE NOTÍCIAS (ABAIXO DA GALERIA) -->
-<div class="row mt-5">
-    <div class="col-md-12">
-        <h3 class="text-light text-center mb-3">Notícias do Facebook</h3>
+        <!-- Feed de notícias do Facebook -->
+        <h6 class="text-light text-center mb-3">Últimas do Facebook</h6>
         <div class="d-flex justify-content-center">
-            <!-- Facebook Plugin -->
             <div class="fb-page"
                  data-href="https://www.facebook.com/Bsoulondeep/"
                  data-tabs="timeline"
-                 data-width="500"
-                 data-height="600"
+                 data-width="320"
+                 data-height="500"
                  data-small-header="false"
                  data-adapt-container-width="true"
                  data-hide-cover="false"
@@ -62,7 +58,7 @@
     </div>
 </div>
 
-<!-- Facebook SDK (ADICIONE UMA ÚNICA VEZ NO FIM DO body!) -->
+<!-- Facebook SDK (coloque no final do body) -->
 <div id="fb-root"></div>
 <script async defer crossorigin="anonymous"
         src="https://connect.facebook.net/pt_BR/sdk.js#xfbml=1&version=v18.0"></script>
