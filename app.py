@@ -9,6 +9,8 @@ UPLOAD_FOLDER = 'static/imagens'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 
+# --- Funções auxiliares ---
+
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
@@ -34,13 +36,15 @@ def init_db():
 def login_required(func):
     def wrapper(*args, **kwargs):
         if not session.get("logado"):
-            flash("Você precisa estar logado.")
+            flash("Você precisa estar logado.", "warning")
             return redirect(url_for("login"))
         return func(*args, **kwargs)
     wrapper.__name__ = func.__name__
     return wrapper
 
-@app.route("/")
+# --- Rotas ---
+
+@app.route("/", methods=["GET"])
 def home():
     with sqlite3.connect("blog.db") as conn:
         cur = conn.cursor()
@@ -93,6 +97,18 @@ def logout():
     session.clear()
     return redirect(url_for("login"))
 
+@app.route("/admin")
+@login_required
+def admin():
+    with sqlite3.connect("blog.db") as conn:
+        cur = conn.cursor()
+        posts = cur.execute("SELECT * FROM posts ORDER BY id DESC").fetchall()
+        capas = {}
+        for post in posts:
+            img = cur.execute("SELECT caminho FROM imagens WHERE post_id = ? LIMIT 1", (post[0],)).fetchone()
+            capas[post[0]] = img[0] if img else None
+    return render_template("admin.html", posts=posts, capas=capas, fundo="fundo.jpg")
+
 @app.route("/novo", methods=["GET", "POST"])
 @login_required
 def novo_post():
@@ -103,8 +119,7 @@ def novo_post():
 
         with sqlite3.connect("blog.db") as conn:
             cur = conn.cursor()
-            cur.execute("INSERT INTO posts (titulo, conteudo, data) VALUES (?, ?, ?)",
-                        (titulo, conteudo, data))
+            cur.execute("INSERT INTO posts (titulo, conteudo, data) VALUES (?, ?, ?)", (titulo, conteudo, data))
             post_id = cur.lastrowid
 
             imagens = request.files.getlist("imagens")
@@ -116,26 +131,8 @@ def novo_post():
                     cur.execute("INSERT INTO imagens (caminho, post_id) VALUES (?, ?)",
                                 (f"imagens/{nome_seguro}", post_id))
             conn.commit()
-        return redirect(url_for("blog"))
+        return redirect(url_for("admin"))
     return render_template("novo_post.html", fundo="fundo.jpg", editar=False)
-
-@app.route("/admin", methods=["GET", "POST"])
-@login_required
-def admin():
-    filtro_data = request.form.get("filtro_data") if request.method == "POST" else None
-    with sqlite3.connect("blog.db") as conn:
-        cur = conn.cursor()
-        if filtro_data:
-            posts = cur.execute("SELECT * FROM posts WHERE data = ? ORDER BY id DESC", (filtro_data,)).fetchall()
-        else:
-            posts = cur.execute("SELECT * FROM posts ORDER BY id DESC").fetchall()
-
-        capas = {}
-        for post in posts:
-            img = cur.execute("SELECT caminho FROM imagens WHERE post_id = ? LIMIT 1", (post[0],)).fetchone()
-            capas[post[0]] = img[0] if img else None
-
-    return render_template("admin.html", posts=posts, capas=capas, filtro_data=filtro_data, fundo="fundo.jpg")
 
 @app.route("/editar/<int:post_id>", methods=["GET", "POST"])
 @login_required
@@ -196,23 +193,8 @@ def excluir_post(post_id):
         conn.commit()
     return redirect(url_for("admin"))
 
-@app.route("/exportar-posts")
-@login_required
-def exportar_posts():
-    with sqlite3.connect("blog.db") as conn:
-        posts = conn.execute("SELECT titulo, conteudo, data FROM posts ORDER BY id DESC").fetchall()
-
-    def gerar_csv():
-        yield "Título,Conteúdo,Data\n"
-        for post in posts:
-            titulo = post[0].replace('"', "'")
-            conteudo = post[1].replace('"', "'").replace("\n", " ")
-            data = post[2]
-            yield f'"{titulo}","{conteudo}","{data}"\n'
-
-    return Response(gerar_csv(), mimetype="text/csv",
-                    headers={"Content-Disposition": "attachment;filename=posts.csv"})
-
+# ⚠️ NUNCA execute app.run() em produção no PythonAnywhere ou Render
+# Use somente localmente:
 if __name__ == "__main__":
     os.makedirs("static/imagens", exist_ok=True)
     init_db()
