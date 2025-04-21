@@ -35,32 +35,33 @@
         </div>
     </div>
 </div>
-<!-- Facebook SDK (adicione só uma vez no <body>) -->
-    <div id="fb-root"></div>
-    <script async defer crossorigin="anonymous"
-            src="https://connect.facebook.net/pt_BR/sdk.js#xfbml=1&version=v18.0"></script>
-    
-    <!-- Feed da Página do Facebook -->
-    <div class="container mt-5">
-        <h3 class="text-light text-center mb-4">Notícias do Facebook</h3>
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="fb-page"
-                     data-href="https://www.facebook.com/Bsoulondeep"
-                     data-tabs="timeline"
-                     data-width="100%"
-                     data-height="500"
-                     data-small-header="false"
-                     data-adapt-container-width="true"
-                     data-hide-cover="false"
-                     data-show-facepile="true">
-                    <blockquote cite="https://www.facebook.com/Bsoulondeep"
-                                class="fb-xfbml-parse-ignore">
-                        <a href="https://www.facebook.com/Bsoulondeep">Facebook</a>
-                    </blockquote>
-                </div>
-            </div>
-        </div>
+<!-- SDK do Facebook (coloque no <body> ou antes de </body>) -->
+<div id="fb-root"></div>
+<script async defer crossorigin="anonymous"
+  src="https://connect.facebook.net/pt_BR/sdk.js#xfbml=1&version=v18.0"></script>
+
+<!-- Bloco da Página -->
+<div class="container mt-5">
+  <h3 class="text-light text-center mb-4">Feed do Facebook</h3>
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="fb-page"
+           data-href="https://www.facebook.com/NASA/"
+           data-tabs="timeline"
+           data-width="500"
+           data-height="600"
+           data-small-header="false"
+           data-adapt-container-width="true"
+           data-hide-cover="false"
+           data-show-facepile="true">
+        <blockquote cite="https://www.facebook.com/NASA/"
+                    class="fb-xfbml-parse-ignore">
+          <a href="https://www.facebook.com/NASA/">NASA</a>
+        </blockquote>
+      </div>
     </div>
+  </div>
+</div>
+
 
 {% endblock %}
