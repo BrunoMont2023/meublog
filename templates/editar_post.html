@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Editar Post{% endblock %}
+{% block content %}
+<h2 class="text-light text-center mb-4">Editar Post</h2>
+
+<form method="POST" enctype="multipart/form-data" class="col-md-8 mx-auto bg-light p-4 rounded shadow">
+    <div class="mb-3">
+        <label class="form-label">Título</label>
+        <input type="text" name="titulo" value="{{ post[1] }}" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Conteúdo</label>
+        <textarea name="conteudo" class="form-control" rows="5" required>{{ post[2] }}</textarea>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Data</label>
+        <input type="text" name="data" value="{{ post[3] }}" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Adicionar novas imagens</label>
+        <input type="file" name="novas_imagens" class="form-control" multiple>
+    </div>
+    <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+</form>
+
+<hr class="my-4">
+<h5 class="text-light">Imagens atuais</h5>
+<div class="row">
+    {% for img in imagens %}
+    <div class="col-md-4 mb-3 text-center">
+        <img src="{{ url_for('static', filename=img[1]) }}" class="img-fluid rounded mb-2">
+        <form action="/apagar-imagem/{{ img[0] }}" method="POST">
+            <button class="btn btn-sm btn-danger" onclick="return confirm('Apagar esta imagem?')">Apagar</button>
+        </form>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Painel de Administração{% endblock %}
+
+{% block content %}
+<h2 class="text-light text-center mb-4">Painel do Administrador</h2>
+
+<!-- Botões e filtro -->
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <form method="POST" class="d-flex gap-2">
+        <input type="text" name="filtro_data" placeholder="Filtrar por data (ex: 18/04/2025)" value="{{ filtro_data or '' }}" class="form-control">
+        <button type="submit" class="btn btn-secondary">Filtrar</button>
+        <a href="/admin" class="btn btn-outline-light">Limpar</a>
+    </form>
+    <div class="d-flex gap-2">
+        <a href="/exportar-posts" class="btn btn-outline-info">Exportar CSV</a>
+        <a href="/novo" class="btn btn-success">+ Novo Post</a>
+    </div>
+</div>
+
+<!-- Tabela com miniaturas -->
+<table class="table table-dark table-hover text-center align-middle">
+    <thead>
+        <tr>
+            <th style="width: 110px;">Miniatura</th>
+            <th>Título</th>
+            <th>Data</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for post in posts %}
+        <tr>
+            <td>
+                {% if capas[post[0]] %}
+                <img src="{{ url_for('static', filename=capas[post[0]]) }}" style="height: 60px; object-fit: cover;" class="rounded">
+                {% else %}
+                <span class="text-muted">Sem imagem</span>
+                {% endif %}
+            </td>
+            <td>{{ post[1] }}</td>
+            <td>{{ post[3] }}</td>
+            <td>
+                <a href="/blog/{{ post[0] }}" class="btn btn-outline-info btn-sm">Ver</a>
+                <a href="/editar/{{ post[0] }}" class="btn btn-warning btn-sm">Editar</a>
+                <form action="/excluir/{{ post[0] }}" method="POST" style="display:inline-block">
+                    <button class="btn btn-danger btn-sm" onclick="return confirm('Confirmar exclusão?')">Excluir</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

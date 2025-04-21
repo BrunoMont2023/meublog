@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Blog{% endblock %}
+
+{% block content %}
+<div class="row">
+    <!-- Conteúdo principal -->
+    <div class="col-md-8">
+        <h1 class="text-light mb-4">Blog</h1>
+
+        {% for post in posts %}
+        <div class="card shadow mb-4">
+            {% if capas[post[0]] %}
+            <img src="{{ url_for('static', filename=capas[post[0]]) }}"
+                 class="card-img-top"
+                 style="height: 250px; object-fit: cover;">
+            {% endif %}
+            <div class="card-body">
+                <h4 class="card-title">{{ post[1] }}</h4>
+                <h6 class="card-subtitle mb-2 text-muted">{{ post[3] }}</h6>
+                <p class="card-text">{{ post[2][:120] }}...</p>
+                <a href="/blog/{{ post[0] }}" class="btn btn-primary">Ler mais</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Galeria lateral compacta -->
+    <div class="col-md-4">
+        <h6 class="text-light mb-3">Posts Recentes</h6>
+        <div class="d-flex flex-column gap-3" style="max-height: 400px; overflow-y: auto;">
+            {% for post in posts %}
+                {% if capas[post[0]] %}
+                <a href="/blog/{{ post[0] }}" class="text-decoration-none text-light">
+                    <div class="card bg-dark text-white">
+                        <img src="{{ url_for('static', filename=capas[post[0]]) }}"
+                             class="card-img-top"
+                             style="height: 80px; object-fit: cover;">
+                        <div class="card-body p-2">
+                            <strong class="card-title d-block" style="font-size: 0.8rem;">
+                                {{ post[1][:40] }}{% if post[1]|length > 40 %}...{% endif %}
+                            </strong>
+                            <small class="text-muted">{{ post[3] }}</small>
+                        </div>
+                    </div>
+                </a>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

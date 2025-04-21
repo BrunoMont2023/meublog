@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}{{ post[1] }}{% endblock %}
+{% block content %}
+<div class="col-md-10 mx-auto">
+    <h1 class="text-light">{{ post[1] }}</h1>
+    <p class="text-muted">{{ post[3] }}</p>
+
+    {% if imagens %}
+    <div id="carousel{{ post[0] }}" class="carousel slide mb-4" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            {% for img in imagens %}
+            <div class="carousel-item {% if loop.first %}active{% endif %}">
+                <img src="{{ url_for('static', filename=img[0]) }}"
+                     class="d-block w-100 rounded"
+                     style="max-height: 400px; object-fit: cover;">
+            </div>
+            {% endfor %}
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carousel{{ post[0] }}" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon"></span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carousel{{ post[0] }}" data-bs-slide="next">
+            <span class="carousel-control-next-icon"></span>
+        </button>
+    </div>
+    {% endif %}
+
+    <p class="text-white">{{ post[2] }}</p>
+    <a href="/blog" class="btn btn-outline-light mt-3">← Voltar</a>
+</div>
+{% endblock %}
